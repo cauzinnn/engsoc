@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#172c3c">
+  <title>Atelier Marina | Cardápio Digital & Encomendas</title>
+  
+  <!-- Fontes do Google: Cinzel & Playfair para sofisticação, Great Vibes para títulos cursivos, Plus Jakarta Sans para leitura -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@500;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Barra Superior / Topbar com avisos e botão admin -->
+  <header class="topbar">
+    <div class="container topbar-content">
+      <div class="topbar-badge">
+        <i class="fa-regular fa-clock"></i>
+        <span>Encomendas com antecedência mínima de <strong>3 dias</strong></span>
+      </div>
+      <div class="topbar-actions">
+        <button id="btnOpenAdmin" class="btn-topbar-admin" title="Área Administrativa do Lojista">
+          <i class="fa-solid fa-lock"></i>
+          <span>Painel Lojista</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero & Identidade Visual do Atelier Marina -->
+  <section class="hero-section">
+    <div class="hero-bg-overlay"></div>
+    <div class="container hero-container">
+      <div class="brand-crest">
+        <img src="assets/img/atelier_logo.png" alt="Logo Atelier Marina - Doces e Salgados Artesanais" class="brand-logo" onerror="this.style.display='none'; document.getElementById('svg-fallback-logo').style.display='block';">
+        
+        <!-- Fallback em SVG vetorial caso a imagem falhe -->
+        <div id="svg-fallback-logo" class="svg-fallback-logo" style="display: none;">
+          <svg viewBox="0 0 200 200" class="crest-svg">
+            <path d="M40,110 Q100,50 160,110 L150,150 Q100,165 50,150 Z" fill="none" stroke="#d4af37" stroke-width="4"/>
+            <path d="M85,55 Q95,40 85,30 M100,55 Q110,35 100,25 M115,55 Q125,40 115,30" fill="none" stroke="#d4af37" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <h1 class="brand-title">ATELIER MARINA</h1>
+          <p class="brand-subtitle">DOCES & SALGADOS ARTESANAIS</p>
+        </div>
+      </div>
+
+      <div class="hero-highlights">
+        <div class="highlight-chip">
+          <i class="fa-solid fa-calendar-check"></i>
+          <span>Mínimo 3 dias de produção</span>
+        </div>
+        <div class="highlight-chip">
+          <i class="fa-solid fa-receipt"></i>
+          <span>Reserva com 50% de sinal</span>
+        </div>
+        <div class="highlight-chip">
+          <i class="fa-brands fa-pix"></i>
+          <span>PIX, Dinheiro & Cartão</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Navegação de Categorias e Barra de Busca -->
+  <nav class="catalog-nav">
+    <div class="container nav-container">
+      <div class="category-tabs" id="categoryTabs">
+        <button class="tab-btn active" data-category="all">
+          <i class="fa-solid fa-utensils"></i> Cardápio Completo
+        </button>
+        <button class="tab-btn" data-category="salgados">
+          <i class="fa-solid fa-bread-slice"></i> Salgados Artesanais
+        </button>
+        <button class="tab-btn" data-category="doces">
+          <i class="fa-solid fa-cake-candles"></i> Doces & Sobremesas
+        </button>
+      </div>
+
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="searchInput" placeholder="Buscar por produto, sabor ou recheio..." aria-label="Buscar produtos">
+        <button id="btnClearSearch" class="btn-clear-search" style="display: none;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Conteúdo Principal do Cardápio -->
+  <main class="container main-content">
+    
+    <!-- Seção de Salgados Artesanais -->
+    <section class="menu-section" id="section-salgados">
+      <div class="section-header">
+        <span class="script-title">Salgados Artesanais</span>
+        <div class="section-divider">
+          <span class="diamond">◆</span>
+        </div>
+        <p class="section-desc">Feitos com ingredientes selecionados, massas leves e recheios generosos.</p>
+      </div>
+
+      <div class="products-grid" id="grid-salgados">
+        <!-- Renderizado dinamicamente via app.js -->
+      </div>
+    </section>
+
+    <!-- Seção de Doces e Sobremesas -->
+    <section class="menu-section" id="section-doces">
+      <div class="section-header">
+        <span class="script-title">Doces e Sobremesas</span>
+        <div class="section-divider">
+          <span class="diamond">◆</span>
+        </div>
+        <p class="section-desc">Brownies artesanais, casquinha crocante e receitas caseiras para adoçar momentos especiais.</p>
+      </div>
+
+      <div class="products-grid" id="grid-doces">
+        <!-- Renderizado dinamicamente via app.js -->
+      </div>
+    </section>
+
+    <!-- Seção Informativa de Encomendas & Pagamento (conforme pág 4 do PDF) -->
+    <section class="info-rules-section">
+      <div class="rules-card">
+        <div class="rule-box">
+          <div class="rule-icon"><i class="fa-solid fa-box-open"></i></div>
+          <h3 class="rule-title">Encomendas</h3>
+          <p>Para garantir a qualidade e organização da produção, trabalhamos exclusivamente com encomendas feitas com antecedência.</p>
+          <div class="rule-alert">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span>Encomendas maiores podem precisar de um prazo de <strong>3 dias de antecedência</strong> (consulte disponibilidade).</span>
+          </div>
+          <p class="rule-sub">As entregas são feitas por <strong>retiradas no local</strong> ou via <strong>Moto Uber / Uber Carro</strong> com taxa variável conforme distância.</p>
+        </div>
+
+        <div class="rule-divider-vert"></div>
+
+        <div class="rule-box">
+          <div class="rule-icon"><i class="fa-solid fa-shield-halved"></i></div>
+          <h3 class="rule-title">Pagamento & Reserva</h3>
+          <div class="highlight-badge-gold">
+            O seu pedido só será reservado com o pagamento de <strong>pelo menos 50%</strong> do valor total do pedido.
+          </div>
+          <p class="rule-sub">Aceitamos <strong>PIX</strong>, <strong>dinheiro</strong> e <strong>Cartão de Crédito/Débito via link</strong> (com acréscimo da operadora sobre o valor).</p>
+          <div class="contacts-list">
+            <a href="https://instagram.com/ateliermarina_oficial" target="_blank" rel="noopener" class="contact-item">
+              <i class="fa-brands fa-instagram"></i>
+              <span>@ateliermarina_oficial</span>
+            </a>
+            <a href="https://wa.me/5521997999296" target="_blank" rel="noopener" class="contact-item">
+              <i class="fa-brands fa-whatsapp"></i>
+              <span>(21) 99799-9296</span>
+            </a>
+            <a href="https://wa.me/5521976240118" target="_blank" rel="noopener" class="contact-item">
+              <i class="fa-brands fa-whatsapp"></i>
+              <span>(21) 97624-0118</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Barra Flutuante de Carrinho / Rodapé Fixo -->
+  <div class="floating-cart-bar" id="floatingCartBar" style="display: none;">
+    <div class="container floating-cart-container">
+      <div class="cart-summary-text">
+        <span class="cart-badge-count" id="cartCountBadge">0</span>
+        <div class="cart-amounts">
+          <span class="cart-label-total">Total: <strong id="cartFloatTotal">R$ 0,00</strong></span>
+          <span class="cart-label-signal">Sinal de 50%: <strong id="cartFloatSignal">R$ 0,00</strong></span>
+        </div>
+      </div>
+      <button id="btnOpenCart" class="btn-checkout-cta">
+        <span>Revisar Encomenda</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal de Detalhes / Customização de Produto -->
+  <div class="modal-overlay" id="productModal" style="display: none;">
+    <div class="modal-card product-modal-content">
+      <button class="modal-close-btn" id="btnCloseProductModal" aria-label="Fechar">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="product-modal-body">
+        <div class="modal-img-wrapper">
+          <img id="modalProductImg" src="" alt="Produto" class="modal-product-img">
+          <span class="modal-category-tag" id="modalProductCategory">Salgados</span>
+        </div>
+
+        <div class="modal-info-wrapper">
+          <h2 id="modalProductTitle" class="modal-product-title">Nome do Produto</h2>
+          <p id="modalProductDesc" class="modal-product-desc">Descrição do produto</p>
+
+          <!-- Seletor de Tamanho / Variação de Porção -->
+          <div class="form-group" id="variantSelectorGroup">
+            <label class="form-label"><i class="fa-solid fa-weight-scale"></i> Escolha a Opção / Porção:</label>
+            <div class="variants-pill-list" id="modalVariantsList">
+              <!-- Botões de variação criados dinamicamente -->
+            </div>
+          </div>
+
+          <!-- Seletor de Sabores disponíveis -->
+          <div class="form-group" id="flavorsSelectorGroup">
+            <label class="form-label"><i class="fa-solid fa-check-double"></i> Sabores Desejados:</label>
+            <p class="form-hint">Marque os sabores que deseja compor no seu pedido:</p>
+            <div class="flavors-check-grid" id="modalFlavorsList">
+              <!-- Checkboxes de sabores criados dinamicamente -->
+            </div>
+          </div>
+
+          <!-- Observações especiais -->
+          <div class="form-group">
+            <label for="modalProductNotes" class="form-label"><i class="fa-solid fa-pen"></i> Observações (opcional):</label>
+            <input type="text" id="modalProductNotes" class="form-control" placeholder="Ex: Metade queijo, metade frango...">
+          </div>
+
+          <!-- Seletor de Quantidade e Botão Adicionar -->
+          <div class="modal-footer-actions">
+            <div class="quantity-stepper">
+              <button class="step-btn" id="btnQtyMinus" aria-label="Diminuir"><i class="fa-solid fa-minus"></i></button>
+              <span class="qty-display" id="modalQtyDisplay">1</span>
+              <button class="step-btn" id="btnQtyPlus" aria-label="Aumentar"><i class="fa-solid fa-plus"></i></button>
+            </div>
+
+            <button class="btn-add-to-cart" id="btnConfirmAddToCart">
+              <span>Adicionar</span>
+              <strong id="modalCalculatedTotal">R$ 0,00</strong>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drawer / Modal do Carrinho & Checkout -->
+  <div class="modal-overlay" id="cartModal" style="display: none;">
+    <div class="modal-card cart-drawer">
+      <div class="cart-header">
+        <div class="cart-header-title">
+          <i class="fa-solid fa-basket-shopping gold-icon"></i>
+          <h3>Sua Encomenda</h3>
+        </div>
+        <button class="modal-close-btn" id="btnCloseCartModal" aria-label="Fechar carrinho">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="cart-body">
+        <!-- Lista de Itens no Carrinho -->
+        <div class="cart-items-container" id="cartItemsList">
+          <!-- Gerado dinamicamente -->
+        </div>
+
+        <!-- Formulário de Finalização de Encomenda com Validações de Domínio -->
+        <div class="checkout-form-section" id="checkoutForm">
+          <h4 class="form-section-title"><i class="fa-solid fa-truck-ramp-box"></i> Detalhes da Encomenda</h4>
+
+          <!-- Tipo de Entrega -->
+          <div class="form-group">
+            <label class="form-label">Forma de Retirada / Entrega:</label>
+            <div class="delivery-radio-group">
+              <label class="delivery-option">
+                <input type="radio" name="deliveryType" value="Retirada no Atelier" checked>
+                <div class="option-card">
+                  <i class="fa-solid fa-shop"></i>
+                  <span>Retirada no Atelier</span>
+                  <small>Grátis</small>
+                </div>
+              </label>
+              <label class="delivery-option">
+                <input type="radio" name="deliveryType" value="Entrega via Moto Uber / Uber Carro">
+                <div class="option-card">
+                  <i class="fa-solid fa-car-side"></i>
+                  <span>Uber Moto / Carro</span>
+                  <small>Taxa à parte</small>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Data de Entrega com Regra de 3 Dias -->
+          <div class="form-group">
+            <div class="label-with-badge">
+              <label for="orderDate" class="form-label">Data de Entrega / Retirada:</label>
+              <span class="badge-lead-time"><i class="fa-regular fa-clock"></i> Mínimo 3 dias</span>
+            </div>
+            <input type="date" id="orderDate" class="form-control" required>
+            <small class="field-help" id="dateValidationFeedback">Selecione uma data com no mínimo 3 dias de antecedência.</small>
+          </div>
+
+          <!-- Horário aproximado -->
+          <div class="form-group">
+            <label for="orderTime" class="form-label">Horário Desejado:</label>
+            <select id="orderTime" class="form-control">
+              <option value="Manhã (09:00 às 12:00)">Manhã (09:00 às 12:00)</option>
+              <option value="Tarde (13:00 às 17:00)" selected>Tarde (13:00 às 17:00)</option>
+              <option value="Fim de tarde (17:00 às 19:00)">Fim de tarde (17:00 às 19:00)</option>
+            </select>
+          </div>
+
+          <!-- Dados do Cliente -->
+          <div class="form-row">
+            <div class="form-group col-half">
+              <label for="customerName" class="form-label">Seu Nome:</label>
+              <input type="text" id="customerName" class="form-control" placeholder="Nome completo" required>
+            </div>
+            <div class="form-group col-half">
+              <label for="customerPhone" class="form-label">Seu Telefone:</label>
+              <input type="tel" id="customerPhone" class="form-control" placeholder="(21) 9XXXX-XXXX" required>
+            </div>
+          </div>
+
+          <!-- Endereço se Uber selecionado -->
+          <div class="form-group" id="addressGroup" style="display: none;">
+            <label for="customerAddress" class="form-label">Endereço de Entrega para cotação Uber:</label>
+            <input type="text" id="customerAddress" class="form-control" placeholder="Rua, número, bairro e referência">
+          </div>
+
+          <!-- Forma de Pagamento pretendida -->
+          <div class="form-group">
+            <label for="paymentMethod" class="form-label">Forma de Pagamento:</label>
+            <select id="paymentMethod" class="form-control">
+              <option value="PIX (Chave enviada no WhatsApp)">PIX</option>
+              <option value="Dinheiro">Dinheiro</option>
+              <option value="Cartão Crédito / Débito (Link de Pagamento)">Cartão via Link (com acréscimo)</option>
+            </select>
+          </div>
+
+          <!-- Resumo Financeiro & Regra de Negócio de Sinal de 50% -->
+          <div class="financial-summary-card">
+            <div class="fin-row">
+              <span>Subtotal dos Produtos:</span>
+              <strong id="cartSummarySubtotal">R$ 0,00</strong>
+            </div>
+            <div class="fin-row total-highlight">
+              <span>Valor Total da Encomenda:</span>
+              <strong id="cartSummaryTotal">R$ 0,00</strong>
+            </div>
+            <div class="fin-divider"></div>
+            <div class="signal-box">
+              <div class="signal-header">
+                <i class="fa-solid fa-circle-exclamation gold-text"></i>
+                <div>
+                  <span class="signal-title">Sinal Obrigatório para Reserva (50%):</span>
+                  <span class="signal-amount" id="cartSummarySignal">R$ 0,00</span>
+                </div>
+              </div>
+              <p class="signal-note">Conforme regras do Atelier Marina, o início da produção exige 50% adiantado. O restante (50%) é pago na entrega/retirada.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cart-footer">
+        <button id="btnSendWhatsapp" class="btn-whatsapp-cta">
+          <i class="fa-brands fa-whatsapp"></i>
+          <span>Enviar Pedido pelo WhatsApp</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal do Painel Administrativo do Lojista -->
+  <div class="modal-overlay" id="adminModal" style="display: none;">
+    <div class="modal-card admin-modal-card">
+      <div class="admin-header">
+        <div class="admin-header-title">
+          <i class="fa-solid fa-gear gold-icon"></i>
+          <h3>Painel Lojista — Atelier Marina</h3>
+        </div>
+        <button class="modal-close-btn" id="btnCloseAdminModal" aria-label="Fechar painel admin">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Tela de Bloqueio por PIN -->
+      <div class="admin-lock-screen" id="adminLockScreen">
+        <div class="lock-icon-wrap">
+          <i class="fa-solid fa-lock"></i>
+        </div>
+        <h4>Autenticação do Administrador</h4>
+        <p>Digite o PIN de segurança para gerenciar o cardápio:</p>
+        <div class="pin-input-group">
+          <input type="password" id="adminPinInput" class="pin-input" maxlength="4" placeholder="••••" autocomplete="off">
+          <button id="btnSubmitPin" class="btn-gold-action">Entrar</button>
+        </div>
+        <p class="pin-hint">Dica para a banca/avaliação: O PIN padrão é <strong>1234</strong></p>
+        <span id="pinErrorMsg" class="error-msg" style="display: none;">PIN incorreto. Tente novamente.</span>
+      </div>
+
+      <!-- Conteúdo Administrativo (Exibido após PIN correto) -->
+      <div class="admin-content-screen" id="adminContentScreen" style="display: none;">
+        <div class="admin-toolbar">
+          <button id="btnNewProduct" class="btn-admin-add">
+            <i class="fa-solid fa-plus"></i> Novo Produto
+          </button>
+          <div class="admin-toolbar-right">
+            <button id="btnResetCatalog" class="btn-admin-secondary" title="Restaura os dados originais do PDF">
+              <i class="fa-solid fa-rotate-left"></i> Restaurar Cardápio Original
+            </button>
+            <button id="btnExportJson" class="btn-admin-secondary" title="Exportar Catálogo em JSON">
+              <i class="fa-solid fa-download"></i> Exportar
+            </button>
+          </div>
+        </div>
+
+        <!-- Formulário de Adicionar / Editar Produto (Toggleable) -->
+        <div class="admin-product-form-card" id="adminProductFormCard" style="display: none;">
+          <h4 id="adminFormTitle">Adicionar Novo Produto</h4>
+          <form id="productEditForm">
+            <input type="hidden" id="editProductId">
+
+            <div class="form-row">
+              <div class="form-group col-half">
+                <label for="prodFormName" class="form-label">Nome do Produto:</label>
+                <input type="text" id="prodFormName" class="form-control" required placeholder="Ex: Bolo Especial">
+              </div>
+              <div class="form-group col-half">
+                <label for="prodFormCategory" class="form-label">Categoria:</label>
+                <select id="prodFormCategory" class="form-control">
+                  <option value="salgados">Salgados Artesanais</option>
+                  <option value="doces">Doces e Sobremesas</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="prodFormDesc" class="form-label">Descrição / Detalhes:</label>
+              <textarea id="prodFormDesc" class="form-control" rows="2" placeholder="Breve descrição dos ingredientes ou preparo..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="prodFormImage" class="form-label">Caminho da Imagem ou URL:</label>
+              <input type="text" id="prodFormImage" class="form-control" placeholder="assets/img/nome_foto.jpg ou URL externa">
+            </div>
+
+            <!-- Variações de Preço (ex: Cento, Bandeja, 300g, 1Kg) -->
+            <div class="form-group">
+              <label class="form-label">Variações de Porção & Preço:</label>
+              <p class="form-hint">Cadastre as opções disponíveis (ex: 50 unidades, 100 unidades, Cento Frito, etc.)</p>
+              <div id="formVariantsContainer" class="form-dynamic-list">
+                <!-- Linhas de variação inseridas via JS -->
+              </div>
+              <button type="button" id="btnAddVariantRow" class="btn-small-add">
+                <i class="fa-solid fa-plus"></i> Adicionar Variação
+              </button>
+            </div>
+
+            <!-- Sabores / Recheios -->
+            <div class="form-group">
+              <label for="prodFormFlavors" class="form-label">Sabores Disponíveis (separados por vírgula):</label>
+              <input type="text" id="prodFormFlavors" class="form-control" placeholder="Frango, Queijo e Presunto, Brigadeiro, Ninho com Nutella...">
+            </div>
+
+            <div class="form-actions">
+              <button type="button" id="btnCancelEdit" class="btn-cancel">Cancelar</button>
+              <button type="submit" class="btn-save-product">Salvar Produto</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Tabela / Lista de Produtos Cadastrados -->
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Foto</th>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Variações / Preços</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="adminProductsTableBody">
+              <!-- Linhas geradas dinamicamente via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast de Notificações -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
