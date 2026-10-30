@@ -406,6 +406,22 @@ if (typeof document !== "undefined") {
   orderDateInput.min = minDateStr;
   orderDateInput.value = minDateStr;
 
+  // Modal Helpers para trava de rolagem no mobile
+  function openModal(modalEl) {
+    if (!modalEl) return;
+    modalEl.style.display = "flex";
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeModal(modalEl) {
+    if (!modalEl) return;
+    modalEl.style.display = "none";
+    const anyOpen = [productModal, cartModal, adminModal].some(m => m && m.style.display === "flex");
+    if (!anyOpen) {
+      document.body.style.overflow = "";
+    }
+  }
+
   // Render inicial
   renderCatalog();
   updateCartUI();
@@ -456,9 +472,20 @@ if (typeof document !== "undefined") {
       if (activeCategory === "doces") gridDoces.innerHTML = emptyMsg;
     }
 
-    // Vincular cliques nos botões dos cards
+    // Vincular cliques nos botões dos cards e no card inteiro
+    document.querySelectorAll(".product-card").forEach(card => {
+      card.addEventListener("click", (e) => {
+        if (!e.target.closest("button")) {
+          const prodId = card.getAttribute("data-id");
+          openProductModal(prodId);
+        }
+      });
+      card.style.cursor = "pointer";
+    });
+
     document.querySelectorAll(".btn-open-product-modal").forEach(btn => {
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
         const prodId = btn.getAttribute("data-id");
         openProductModal(prodId);
       });
@@ -467,6 +494,7 @@ if (typeof document !== "undefined") {
 
   function createProductCardHTML(product) {
     const minPrice = Math.min(...product.variants.map(v => v.price));
+    const categoryLabel = product.category === "salgados" ? "Salgados Artesanais" : "Doces & Sobremesas";
     
     // Gera os selos de preço no estilo do PDF
     const priceBadges = product.variants.map(v => `
@@ -489,16 +517,14 @@ if (typeof document !== "undefined") {
 
     return `
       <article class="product-card" data-id="${product.id}">
-        <div class="product-card-header">
-          <span class="card-title-script">${escapeHtml(product.name)}</span>
-          <span class="card-category-badge">${product.category}</span>
+        <div class="product-card-top-media">
+          <img src="${product.image || 'assets/img/empadinhas.jpg'}" alt="${escapeHtml(product.name)}" class="product-img" loading="lazy" onerror="this.src='assets/img/empadinhas.jpg'">
+          <span class="card-category-pill">${categoryLabel}</span>
+          <span class="card-starting-price">A partir de <strong>${BusinessRules.formatCurrency(minPrice)}</strong></span>
         </div>
 
         <div class="product-card-body">
-          <div class="product-image-container">
-            <img src="${product.image || 'assets/img/empadinhas.jpg'}" alt="${escapeHtml(product.name)}" class="product-img" loading="lazy" onerror="this.src='assets/img/empadinhas.jpg'">
-          </div>
-
+          <h3 class="product-card-title">${escapeHtml(product.name)}</h3>
           <p class="product-desc">${escapeHtml(product.description || "")}</p>
 
           ${flavorsHTML}
@@ -507,9 +533,9 @@ if (typeof document !== "undefined") {
             ${priceBadges}
           </div>
 
-          <button class="btn-card-action btn-open-product-modal" data-id="${product.id}">
-            <i class="fa-solid fa-plus"></i>
-            <span>Adicionar à Encomenda</span>
+          <button class="btn-card-action btn-open-product-modal" data-id="${product.id}" aria-label="Personalizar ${escapeHtml(product.name)}">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            <span>Personalizar & Encomendar</span>
           </button>
         </div>
       </article>
@@ -576,7 +602,7 @@ if (typeof document !== "undefined") {
     }
 
     updateModalCalculatedTotal();
-    productModal.style.display = "flex";
+    openModal(productModal);
   }
 
   function updateModalCalculatedTotal() {
@@ -600,7 +626,7 @@ if (typeof document !== "undefined") {
   });
 
   btnCloseProductModal.addEventListener("click", () => {
-    productModal.style.display = "none";
+    closeModal(productModal);
   });
 
   // Adicionar ao Carrinho
@@ -630,7 +656,7 @@ if (typeof document !== "undefined") {
     StorageService.saveCart(AppState.cart);
     updateCartUI();
 
-    productModal.style.display = "none";
+    closeModal(productModal);
     showToast(`Adicionado: ${product.name} (${variant.name})`, "success");
   });
 
@@ -746,12 +772,27 @@ if (typeof document !== "undefined") {
   }
 
   btnOpenCart.addEventListener("click", () => {
-    cartModal.style.display = "flex";
+    openModal(cartModal);
   });
 
   btnCloseCartModal.addEventListener("click", () => {
-    cartModal.style.display = "none";
+    closeModal(cartModal);
   });
+
+  // Máscara e formatação amigável de telefone brasileiro
+  if (customerPhoneInput) {
+    customerPhoneInput.addEventListener("input", (e) => {
+      let v = e.target.value.replace(/\D/g, "");
+      if (v.length > 11) v = v.substring(0, 11);
+      if (v.length > 6) {
+        e.target.value = `(${v.substring(0, 2)}) ${v.substring(2, 7)}-${v.substring(7)}`;
+      } else if (v.length > 2) {
+        e.target.value = `(${v.substring(0, 2)}) ${v.substring(2)}`;
+      } else if (v.length > 0) {
+        e.target.value = `(${v}`;
+      }
+    });
+  }
 
   // Toggle do campo de endereço quando Uber for selecionado
   document.querySelectorAll('input[name="deliveryType"]').forEach(radio => {
@@ -848,7 +889,7 @@ if (typeof document !== "undefined") {
     AppState.cart = [];
     StorageService.clearCart();
     updateCartUI();
-    cartModal.style.display = "none";
+    closeModal(cartModal);
     showToast("Pedido gerado com sucesso! Redirecionando para o WhatsApp...", "success");
   });
 
@@ -881,13 +922,13 @@ if (typeof document !== "undefined") {
   // PAINEL ADMINISTRATIVO (CRUD & Gestão)
   // ==========================================================================
   btnOpenAdmin.addEventListener("click", () => {
-    adminModal.style.display = "flex";
+    openModal(adminModal);
     adminPinInput.value = "";
     pinErrorMsg.style.display = "none";
   });
 
   btnCloseAdminModal.addEventListener("click", () => {
-    adminModal.style.display = "none";
+    closeModal(adminModal);
     adminProductFormCard.style.display = "none";
   });
 
@@ -1128,9 +1169,9 @@ if (typeof document !== "undefined") {
 
   // Fechar modais ao clicar no fundo escuro
   window.addEventListener("click", (e) => {
-    if (e.target === productModal) productModal.style.display = "none";
-    if (e.target === cartModal) cartModal.style.display = "none";
-    if (e.target === adminModal) adminModal.style.display = "none";
+    if (e.target === productModal) closeModal(productModal);
+    if (e.target === cartModal) closeModal(cartModal);
+    if (e.target === adminModal) closeModal(adminModal);
   });
 });
 }
